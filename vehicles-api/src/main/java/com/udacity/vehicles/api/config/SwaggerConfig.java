@@ -32,8 +32,8 @@ public class SwaggerConfig {
                 "This API is used to create, view, update, delete data with respect to Vehicle data.",
                 "1.0",
                 "http://www.udacity.com/tos",
-                new Contact("Sudhir Tyagi", "www.udacity.com", "sudhir.skt@gmail.com"),
-                "License of API", "http://www.udacity.com/license", Collections.emptyList());
+                new Contact("Md. Rajaul Islam", "www.udacity.com", "springapidev@gmail.com"),
+                "API License", "http://www.udacity.com/license", Collections.emptyList());
     }
 
 }

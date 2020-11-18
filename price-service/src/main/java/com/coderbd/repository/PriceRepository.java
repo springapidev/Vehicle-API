@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
-@Repository
-public interface PriceRepository extends JpaRepository<Price,Long> {
-    Set<Price> findByVehicleIdIn(Set<Long> vehicleIds);
+
+public class PriceRepository {
+
 }

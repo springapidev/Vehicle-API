@@ -16,6 +16,8 @@ import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.Details;
 import com.udacity.vehicles.domain.manufacturer.Manufacturer;
 import com.udacity.vehicles.service.CarService;
+
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -179,7 +181,7 @@ public class CarControllerTest {
     private Car getCar() {
         Car car = new Car();
         car.setId(1L);
-        car.setPrice(priceClient.getPrice(car.getId()));
+        car.setPrice(new BigDecimal(0.0));
         car.setLocation(new Location(40.730610, -73.935242));
         Details details = new Details();
         Manufacturer manufacturer = new Manufacturer(101, "Chevrolet");

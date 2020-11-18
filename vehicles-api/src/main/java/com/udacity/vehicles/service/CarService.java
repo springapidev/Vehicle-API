@@ -6,6 +6,7 @@ import com.udacity.vehicles.domain.Location;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,13 @@ public class CarService {
      * @return a list of all vehicles in the CarRepository
      */
     public List<Car> list() {
-        return repository.findAll();
+        List<Car> list = new ArrayList<>();
+        repository.findAll().forEach((car) -> {
+            car.setPrice(priceClient.getPrice(car.getId()).getPrice());
+            car.setLocation(mapsClient.getAddress(new Location(car.getLocation().getLat(), car.getLocation().getLon())));
+            list.add(car);
+        });
+        return list;
     }
 
     /**
@@ -55,17 +62,13 @@ public class CarService {
          *   If it does not exist, throw a CarNotFoundException
          *   Remove the below code as part of your implementation.
          */
-        Optional<Car> car = Optional.of(new Car());
+        Car car = new Car();
         if (repository.existsById(id)) {
-            car = repository.findById(id);
-            if (car.get().getId() != null) {
-                car.get().setDetails(car.get().getDetails());
-                car.get().setLocation(car.get().getLocation());
-                car.get().setPrice(priceClient.getPrice(car.get().getId()));
-                car.get().setLocation(mapsClient.getAddress(car.get().getLocation()));
-            } else {
-                throw new CarNotFoundException();
-            }
+            car = repository.findById(id).get();
+            car.setPrice(priceClient.getPrice(car.getId()).getPrice());
+            car.setLocation(mapsClient.getAddress(new Location(car.getLocation().getLat(), car.getLocation().getLon())));
+        } else {
+            throw new CarNotFoundException("Car Not Found");
         }
 
 
@@ -87,8 +90,8 @@ public class CarService {
          * meaning the Maps service needs to be called each time for the address.
          */
 
+        return car;
 
-        return car.get();
     }
 
     /**
@@ -98,26 +101,23 @@ public class CarService {
      * @return the new/updated car is stored in the repository
      */
     public Car save(Car car) {
-        Optional<Car> car1=this.repository.findById(car.getId());
 
-        try {
-            if (!car1.isEmpty()) {
-                return repository.findById(car.getId())
-                        .map(carToBeUpdated -> {
-                            carToBeUpdated.setDetails(car.getDetails());
-                            carToBeUpdated.setPrice(priceClient.getPrice(car.getId()));
-                            carToBeUpdated.setLocation(mapsClient.getAddress(new Location(car.getLocation().getLat(),car.getLocation().getLon())));
-                            return repository.save(carToBeUpdated);
-                        }).orElseThrow(CarNotFoundException::new);
+        if (repository.existsById(car.getId() == null ? 0 : car.getId())) {//if true update, else save
+            if (repository.findById(car.getId()).get() != null) {
+                car.setDetails(car.getDetails());
+                car.setPrice(priceClient.getPrice(car.getId()).getPrice());
+                car.setLocation(mapsClient.getAddress(new Location(car.getLocation().getLat(), car.getLocation().getLon())));
+                return repository.save(car);
+            } else {
+                throw new CarNotFoundException();
             }
-        }catch (NullPointerException ne){
-           ne.printStackTrace();
 
+        } else {
+            // car object will be save, since car object did not provide vehicle ID
+            car.setPrice(priceClient.getPrice(car.getId()).getPrice());
+            car.setLocation(mapsClient.getAddress(new Location(car.getLocation().getLat(), car.getLocation().getLon())));
+            return repository.save(car);
         }
-        car.setPrice(priceClient.getPrice(car.getId()));
-        car.setLocation(mapsClient.getAddress(new Location(car.getLocation().getLat(),car.getLocation().getLon())));
-        return repository.save(car);
-
     }
 
     /**
@@ -132,7 +132,7 @@ public class CarService {
          */
         if (this.repository.existsById(id)) {
             this.repository.deleteById(id);
-        }else {
+        } else {
             throw new CarNotFoundException();
         }
 

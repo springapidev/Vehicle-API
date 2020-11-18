@@ -2,6 +2,8 @@ package com.udacity.vehicles.domain.car;
 
 import com.udacity.vehicles.domain.Condition;
 import com.udacity.vehicles.domain.Location;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -18,7 +20,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Car {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @CreatedDate
@@ -40,7 +42,9 @@ public class Car {
     private Location location = new Location(0d, 0d);
 
     @Transient
-    private String price;
+    private BigDecimal price;
+
+
 
     public Long getId() {
         return id;
@@ -90,11 +94,11 @@ public class Car {
         this.location = location;
     }
 
-    public String getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }

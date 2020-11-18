@@ -21,27 +21,34 @@ public class PriceClient {
 
 
     /**
-     *  When vehicle api will provide a vehicle id, then this method will return price
-     *  error message that the vehicle ID is invalid Or Service May down
+     * When vehicle api will provide a vehicle id, then this method will return price
+     * error message that the vehicle ID is invalid Or Service May down
+     *
      * @param vehicleId
      * @return
      */
-    public String getPrice(Long vehicleId) {
-        try {
-            Price price = client
-                    .get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("services/price/")
-                            .queryParam("vehicleId", vehicleId)
-                            .build()
-                    )
-                    .retrieve().bodyToMono(Price.class).block();
+    public Price getPrice(Long vehicleId) {
+        Price price = new Price();
+        if (vehicleId != null) {
+            try {
+                price = client
+                        .get()
+                        .uri(uriBuilder -> uriBuilder
+                                .path("services/price/")
+                                .queryParam("vehicleId", vehicleId)
+                                .build()
+                        )
+                        .retrieve().bodyToMono(Price.class).block();
+//String.format("%s %s", price.getCurrency(), price.getPrice())
+                return price;
 
-            return String.format("%s %s", price.getCurrency(), price.getPrice());
-
-        } catch (Exception e) {
-            log.error("Unexpected Unexception getting price for vehicle {}", vehicleId, e);
+            } catch (Exception e) {
+                log.error("Unexpected Unexception getting price for vehicle {}", vehicleId, e);
+                return price;
+            }
+        } else {
+           return new Price();
         }
-        return "(consult price)";
+
     }
 }

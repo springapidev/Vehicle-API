@@ -6,6 +6,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.service.CarService;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -42,6 +43,7 @@ class CarController {
 
     /**
      * Creates a list to store any vehicles.
+     *
      * @return list of vehicles
      */
     @GetMapping
@@ -54,6 +56,7 @@ class CarController {
 
     /**
      * Gets information of a specific car by ID.
+     *
      * @param id the id number of the given vehicle
      * @return all information for the requested vehicle
      */
@@ -70,6 +73,7 @@ class CarController {
 
     /**
      * Posts information to create a new vehicle in the system.
+     *
      * @param car A new vehicle to add to the system.
      * @return response that the new vehicle was added to the system
      * @throws URISyntaxException if the request contains invalid fields or syntax
@@ -83,16 +87,16 @@ class CarController {
          */
         this.carService.save(car);
         Resource<Car> resource = assembler.toResource(car);
-        return ResponseEntity.created(new URI(resource.getId().getHref())).body(resource);
+        return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
     }
 
     /**
      * Updates the information of a vehicle in the system.
-     * @param id The ID number for which to update vehicle information.
+     *
+     * @param id  The ID number for which to update vehicle information.
      * @param car The updated information about the related vehicle.
      * @return response that the vehicle was updated in the system
      * Input Json for Save
-     *
      */
     /*
     {
@@ -112,7 +116,6 @@ class CarController {
     "modelYear": 2015,
     "numberOfDoors": 4
   },
-  "id": 1,
   "location": {
     "lat": 25.33,
     "lon": 45.11
@@ -128,13 +131,17 @@ class CarController {
          * TODO: Use the `assembler` on that updated car and return as part of the response.
          *   Update the first line as part of the above implementing.
          */
+
+        car.setId(id);
         this.carService.save(car);
         Resource<Car> resource = assembler.toResource(car);
-        return ResponseEntity.created(new URI(resource.getId().getHref())).body(resource);
+        return ResponseEntity.ok(resource);
+ 
     }
 
     /**
      * Removes a vehicle from the system.
+     *
      * @param id The ID number of the vehicle to remove.
      * @return response that the related vehicle is no longer in the system
      */

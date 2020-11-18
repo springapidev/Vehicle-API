@@ -19,8 +19,8 @@ import java.util.Set;
 @RestController
 @RequestMapping("/services/price")
 public class PricingController {
-    @Autowired
-    private PricingService service;
+
+
 
     /**
      * @param vehicleId Unique number of the vehicle
@@ -40,51 +40,5 @@ public class PricingController {
 
     }
 
-    /**
-     * @Apinote Gets the price for a requested list of vehicles.
-     *
-     * @param vehicleList Set of Id numbers of the vehicle for which the price is requested
-     * @return price of the vehicle, or error that it was not found.
-     */
-    @GetMapping("/getPrices")
-    public ResponseEntity<Set<Price>> getList(@RequestParam(name = "vehicleList") Set<Long> vehicleList) {
-        return new ResponseEntity<>(service.getPriceList(vehicleList), HttpStatus.CREATED);
-    }
 
-    /**
-     * @Apinote Sets the price for a requested vehicle.
-     * @param price object
-     * @return price of the vehicle, or error that it was not found.
-     */
-    @PostMapping
-    public ResponseEntity<Price> setPrice(@RequestBody Price price) {
-        return new ResponseEntity<Price>(service.setPrice(price), HttpStatus.CREATED);
-    }
-
-    /**
-     * we can set the price for a requested vehicle.
-     *
-     * @param vehicleId ID number of the vehicle for which the price is requested
-     * @param currency  may be USd or BDT OR EUR etc
-     * @param amount    may be any like 1000,25000,2360.25 etc
-     * @return price of the vehicle, or error if it was not found.
-     * @Apinote url should be like this http://localhost:8082/services/price/getNewPrice?vehicleId=100&currency=BDT&amount=20000
-     */
-    @GetMapping("/getNewPrice")
-    public Price getNewPrice(@RequestParam(name = "vehicleId") Long vehicleId,
-                             @RequestParam(name = "currency") String currency,
-                             @RequestParam(name = "amount") Optional<BigDecimal> amount) {
-        return service.setNewPrice(vehicleId, currency, amount);
-    }
-
-    /**
-     * Sets the price for a requested vehicle.
-     *
-     * @param vehicleId ID number of the vehicle for which the price is to be deleted
-     * @return price of the vehicle, or error that it was not found.
-     */
-    @DeleteMapping
-    public String delete(@RequestParam(name = "vehicleId") Long vehicleId) {
-        return service.delete(vehicleId);
-    }
 }
